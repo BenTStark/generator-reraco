@@ -1,6 +1,6 @@
 {
   "name": "generator-reraco",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "files": [
     "generators"
@@ -9,7 +9,11 @@
     "yeoman-generator"
   ],
   "dependencies": {
-    "yeoman-generator": "^1.1.1"
+    "chalk": "^2.4.1",
+    "change-case": "^3.0.2",
+    "lodash": "^4.17.11",
+    "yeoman-generator": "^1.1.1",
+    "yosay": "^2.0.2"
   },
   "author": "BenTStark",
   "license": "MIT"
