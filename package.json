@@ -1,7 +1,11 @@
 {
   "name": "generator-reraco",
   "version": "0.2.0",
-  "description": "",
+  "description": "create react-redux components/container.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BenTStark/generator-reraco"
+  },
   "files": [
     "generators"
   ],
