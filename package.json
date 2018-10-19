@@ -10,7 +10,10 @@
     "generators"
   ],
   "keywords": [
-    "yeoman-generator"
+    "yeoman-generator",
+    "react",
+    "redux",
+    "ducks"
   ],
   "dependencies": {
     "chalk": "^2.4.1",
