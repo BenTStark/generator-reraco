@@ -45,7 +45,15 @@ module.exports = class extends Generator {
       name: 'featurePart',
       message: 'What´s the name of your container/component (camelCase)?',
       default: 'newFeature'
-    }]);
+   }, {
+      when: function(response) {
+        return response.featureEqual && -.includes(['home','about','contact'],response.feature)
+      },
+      type: 'confirm',
+      name: 'template',
+      message: 'Do you want to use the ' + chalk.green(response.feature) + ' template?',
+      default: false
+   }]);
 
   };
 
@@ -53,7 +61,13 @@ module.exports = class extends Generator {
     var props = this.answers;
     if (this.answers.featureEqual)  {
       props.featurePart = props.feature;
-    }
+      if (this.answers.template) {
+        props.featureTemplate = props.feature;
+      } else {
+        props.featureTemplate = '(n/a)'
+      }
+        }
+
     props.capFeaturePart = changeCase.pascalCase(props.featurePart);
 
     var copy = this.fs.copy.bind(this.fs);
@@ -73,7 +87,7 @@ module.exports = class extends Generator {
     }
 
     if (_.isEqual(props.componentType,'container') || _.isEqual(props.componentType,'full')  ) {
-      // for container of full feater; container is installed 
+      // for container of full feater; container is installed
       copyTpl(tPath('featurePart.container.js'),dPath(props.featurePart + '.container.jsx'),props);
     }
     // default files
