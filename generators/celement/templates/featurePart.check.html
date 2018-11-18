@@ -1,0 +1,32 @@
+<html>
+<head>
+  <title>checklist for <%= featurePart %></title>
+  <style type="text/css">
+    span.bold-red {
+      color: red;
+      font-weight: bold;
+    },
+    span.link {
+      color: blue;
+      text-decoration: underline;
+    }
+</style>
+</head>
+<body>
+<h1>This a checklist for <%= featurePart %></h1>
+<span>After succesfully generating your Celement with yeoman generator <span class="bold-red">reraco</span>, go through this list to check if everything fits for your website.</span>
+<form action="/action_page.php">
+    <input type="checkbox">Component test in<span class="link"><%= featurePart %>.test.js</span> needs all prop parameters!</><br>
+    <input type="checkbox">If not needed: Delete defaultAction from <span class="link">duck/actions.js</span> and <span class="link">duck/actions.test.js</span></><br>
+    <input type="checkbox">If not needed: Delete defaultOperation from <span class="link">duck/operations.js</span> and <span class="link">duck/operations.test.js</span></><br>
+    <input type="checkbox">If not needed: Delete defaultReducerFunction from <span class="link">duck/reducer.js</span> and <span class="link">duck/reducer.test.js</span></><br>
+    <input type="checkbox" name="vehicle" value="Bike">Information: Usually
+      defaultAction in <span class="link">duck/actions.js</span>,
+      defaultOperation in <span class="link">duck/operations.js</span>,
+      defaultReducerFunction in <span class="link">duck/reducer.js</span> have the same name<br>
+    <% if (auth) { %>
+    <input type="checkbox">Go to <span class="link">duck/auth.constants.js</span> and fill in your Auth0 API values. You can find them in your <a href="https://auth0.com/">Auth0 account</><br>
+    <% } %>
+</form>
+</body>
+</html>

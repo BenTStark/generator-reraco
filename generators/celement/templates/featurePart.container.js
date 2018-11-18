@@ -1,17 +1,28 @@
 import { connect } from 'react-redux';
 import <%= capFeaturePart %>Component from './<%= featurePart %>.component';
-import { <%= feature %>Operations } from './duck';
+import { <%= capFeaturePart %>Operations } from './duck';
+<% if (axios) { %>
+import axios from "axios";
+<% } %>
 
 const mapStateToProps = state => {
-  const { defaultProp } = state.<%= feature %>Reducer;
-  return { defaultProp }
+  return { <%= feature %>: state.<%= feature %>Reducer<% if (auth) { %>, auth: state.authReducer<% } %> }
 };
 
 const mapDispatchToProps = dispatch => {
-  const defaultOperation = () => dispatch(<%= feature %>Operations.defaultOperation()));
-
+  const defaultOperation = () => dispatch(<%= capFeaturePart %>Operations.defaultOperation()));
+  <% if (axios) { %>
+  // Dispatch for Axios module
+  // --Start axios
+  const getAxiosObj = () =>
+      axios.get(<%= capFeaturePart %>Operations.getAxiosUrl).then(response => {
+        dispatch(<%= capFeaturePart %>Operations.getAxiosObj(response.data));
+      });
+  <% } %>
+  // --End axios
   return {
-    defaultOperation
+    defaultOperation<% if (axios) { %>,
+    getAxiosObj<% } %>
   }
 };
 

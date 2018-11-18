@@ -24,33 +24,33 @@ module.exports = class extends Generator {
           "contact",
           "ducks only!"
         ],
+        // TODO: Trennung von Component Type und ducks. Einfach nach componentType fragen ob ducks dazu sollen oder nicht.
         componentType: [],
+        sass: [null, true, true, true, false],
         duckFunctions: [],
+        // TODO: Sind andere reducer notwendig. z.B. authReducer einbinden
+        //reducer: [],
         feature: [null, "app", "blog", null, null],
-        // For ducks no featurePart and featureEqual necessary
+        // For ducks featurePart and featureEqual not necessary
         featureEqual: [null, true, true, false, "(n/a)"],
         featurePart: [null, "app", "blog", "contact", "(n/a)"]
       },
       componentType: {
-        answers: ["full", "container", "component"]
+        answers: ["full", "container", "component", "component with ducks"]
       },
       duckFunctions: ["auth", "axios"]
     };
-    choices.template.componentType.push(null);
-    choices.template.componentType.push(choices.componentType.answers[0]);
-    choices.template.componentType.push(choices.componentType.answers[0]);
-    choices.template.componentType.push(choices.componentType.answers[1]);
-    // For ducks no componentType necessary
-    choices.template.componentType.push("(n/a)");
+    choices.template.componentType.push(null); // "Design my own Celement": componentType unknown yet
+    choices.template.componentType.push(choices.componentType.answers[3]); // "app": componentType - component with ducks
+    choices.template.componentType.push(choices.componentType.answers[0]); // "blog": componentType - full
+    choices.template.componentType.push(choices.componentType.answers[1]); // "contact": componentType - container
+    choices.template.componentType.push("(n/a)"); // "ducks only!": componentType not necessary
 
-    choices.template.duckFunctions.push(null);
-    choices.template.duckFunctions.push([
-      choices.duckFunctions[0],
-      choices.duckFunctions[1]
-    ]);
-    choices.template.duckFunctions.push([choices.duckFunctions[1]]);
-    choices.template.duckFunctions.push("(n/a)");
-    choices.template.duckFunctions.push(null);
+    choices.template.duckFunctions.push(null); // "Design my own Celement": duckFunctions unknown yet
+    choices.template.duckFunctions.push([choices.duckFunctions[0]]); // "app": duckFunctions - auth
+    choices.template.duckFunctions.push([choices.duckFunctions[1]]); // "blog": duckFunctions - axios
+    choices.template.duckFunctions.push("(n/a)"); // "contact": no duckFunctions necessary
+    choices.template.duckFunctions.push(null); // "ducks only!": duckFunctions unknown yet
 
     this.log(
       yosay(
@@ -78,6 +78,7 @@ module.exports = class extends Generator {
         const index = choices.template.answers.indexOf(response.template);
 
         _.merge(response, {
+          sass: choices.template.sass[index],
           componentType: choices.template.componentType[index],
           feature: choices.template.feature[index],
           featurePart: choices.template.featurePart[index],
@@ -101,8 +102,46 @@ module.exports = class extends Generator {
               choices: choices.componentType.answers
             }
           ]).then(response => {
+            let isContainer = false;
+            if (
+              _.isEqual(
+                response.componentType,
+                choices.componentType.answers[0]
+              ) ||
+              _.isEqual(
+                response.componentType,
+                choices.componentType.answers[1]
+              )
+            ) {
+              isContainer = true;
+            }
             _.merge(prevAnswer, {
-              componentType: response.componentType
+              componentType: response.componentType,
+              container: isContainer
+            });
+            return prevAnswer;
+          });
+        } else {
+          const nextAnswer = prevAnswer;
+          return nextAnswer;
+        }
+      })
+      .then(prevAnswer => {
+        const index = choices.template.answers.indexOf(prevAnswer.template);
+        if (_.isEqual(choices.template.sass[index], null)) {
+          /*------------------------------
+          Celement Design/ Template design
+            Ducks, Celements and some Templates need the Info on the feature name which can be choosen by the user!
+          ------------------------------*/
+          return this.prompt([
+            {
+              type: "confirm",
+              name: "sass",
+              message: "Do you want to include SASS Styling?"
+            }
+          ]).then(response => {
+            _.merge(prevAnswer, {
+              sass: response.sass
             });
             return prevAnswer;
           });
@@ -250,7 +289,8 @@ module.exports = class extends Generator {
 
     if (
       _.isEqual(props.componentType, "full") ||
-      _.isEqual(props.template, "ducks only!")
+      _.isEqual(props.template, "ducks only!") ||
+      _.isEqual(props.template, "component with ducks")
     ) {
       // ducks are only required when full feature is installed or when only duck is selected
       copyTpl(tPath("duck/actions.js"), dPath("duck/actions.js"), props);
@@ -259,6 +299,10 @@ module.exports = class extends Generator {
         dPath("duck/actions.test.js"),
         props
       );
+      if (props.auth) {
+        copy(tPath("duck/auth.constant.js"), dPath("duck/auth.constant.js"));
+        copy(tPath("duck/auth.service.js"), dPath("duck/auth.service.js"));
+      }
       copyTpl(tPath("duck/operations.js"), dPath("duck/operations.js"), props);
       copyTpl(
         tPath("duck/operations.test.js"),
@@ -286,14 +330,10 @@ module.exports = class extends Generator {
       );
     }
     // default files
-    if (
-      _.isEqual(props.componentType, "component") ||
-      _.isEqual(props.componentType, "container") ||
-      _.isEqual(props.componentType, "full")
-    ) {
+    if (!_.isEqual(props.componentType, "(n/a)")) {
       copyTpl(
-        tPath("featurePart.component.jsx"),
-        dPath(props.featurePart + ".component.jsx"),
+        tPath("featurePart.component.js"),
+        dPath(props.featurePart + ".component.js"),
         props
       );
       copyTpl(
@@ -301,6 +341,14 @@ module.exports = class extends Generator {
         dPath(props.featurePart + ".test.js"),
         props
       );
+      copyTpl(
+        tPath("featurePart.check.html"),
+        dPath(props.featurePart + ".check.html"),
+        props
+      );
+      if (props.sass) {
+        copy(tPath("featurePart.scss"), dPath(props.featurePart + ".scss"));
+      }
     }
   }
 };

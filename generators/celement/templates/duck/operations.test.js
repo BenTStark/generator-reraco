@@ -1,4 +1,6 @@
 <% if (auth) { %>
+// Operation Tests for Auth module
+// --Start auth
 import { <%= capFeaturePart %>Operations } from "./operations";
 import AuthService from "./auth.service";
 import types from "./types";
@@ -29,4 +31,5 @@ describe(">>> <%= capFeaturePart %> - Operations Test", () => {
   // Missing: Tests for AuthService.authentication()
   // Problem: Auth0Lock has to mocked somehow. But How?
 });
+// --End auth
 <% } %>

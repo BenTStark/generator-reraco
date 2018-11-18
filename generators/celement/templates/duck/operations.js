@@ -1,6 +1,8 @@
 // optional for API requests
 import ActionCreators from "./actions";
 <% if (auth) { %>
+// Import for Auth module
+// --Start auth import
 import types from "./types";
 import AuthService from "./auth.service";
 
@@ -8,10 +10,15 @@ const loginRequest = () => ActionCreators.loginRequest();
 const loginSuccess = authInformation => ActionCreators.loginSuccess(authInformation);
 const loginError = () => ActionCreators.loginError();
 const logout = () => ActionCreators.logout();
+// --End auth import
 <% } %>
-const defaultOperation = value => Creators.defaultAction(value);
+
+// This is an example how a simple operation could look like:
+const defaultOperation = value => ActionCreators.defaultAction(value);
 
 <% if (auth) { %>
+// Operations for Auth module
+// --Start auth operations
 const checkLogin = () => {
   return new Promise((resolve, reject) => {
     const payload = {},
@@ -66,7 +73,20 @@ const handleLogin = () => {
 const handleLogout = () => {
   AuthService.logout();
 };
+// --End auth operations
 <% } %>
+
+<% if (axios) { %>
+// Operations for axios module
+// --Start axios operations
+
+// URLs for API us are build here, but used in container!
+const getAxiosUrl = "https//example.com/api";
+
+const getAxiosObj = obj => ActionCreators.getAxiosObj(obj);
+// --End axios operations
+<% } %>
+
 export const <%= capFeaturePart %>Operations = {
   defaultOperation<% if (auth) { %>,
   handleLogin,
@@ -76,6 +96,8 @@ export const <%= capFeaturePart %>Operations = {
   handleLogout,
   logout,
   checkLogin,
-  authentication
+  authentication<% } %><% if (axios) { %>,
+  getAxiosUrl,
+  getAxiosObj
   <% } %>
 };

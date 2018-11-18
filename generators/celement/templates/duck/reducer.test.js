@@ -1,4 +1,4 @@
-import <% if (auth) { %>authReducer<% } else { %><%= featurePart %>reducer<% } %> from "./reducer";
+import <% if (auth) { %>authReducer<% } else { %><%= feature %>Reducer<% } %> from "./reducer";
 import types from "./types";
 
 describe(">>>>>> <%= capFeaturePart %> - Reducer Test", () => {
@@ -8,17 +8,31 @@ describe(">>>>>> <%= capFeaturePart %> - Reducer Test", () => {
     accessToken: null,
     loginRequest: false,
     loginSuccess: false,
-    loginError: false
+    loginError: false<% } %><% if (axios) { %>,
+    payload: null
     <% } %>
   };
+  // This is an example how a simple Test of a Reducer function could look like:
+  it("+++ reducer for DEFAULT_ACTION", () => {
+    let state = {
+      ...initialState,
+      value: "value"
+    };
+    let expectedState = initialState;
+    state = <% if (auth) { %>authReducer<% } else { %><%= feature %>Reducer<% } %>(state, { type: types.DEFAULT_ACTION, value: "value" });
+    expect(state).toEqual(expectedState);
+  });
+
   <% if (auth) { %>
+  // Reducer Tests for Auth module
+  // --Start auth
   it("+++ reducer for LOGIN_REQUEST", () => {
     let state = initialState;
     let expectedState = {
       ...initialState,
       loginRequest: true
     };
-    state = <% if (auth) { %>authReducer<% } else { %><%= featurePart %>reducer<% } %>(state, { type: types.LOGIN_REQUEST });
+    state = <% if (auth) { %>authReducer<% } else { %><%= feature %>Reducer<% } %>(state, { type: types.LOGIN_REQUEST });
     expect(state).toEqual(expectedState);
   });
   it("+++ reducer for LOGIN_SUCCESS", () => {
@@ -29,7 +43,7 @@ describe(">>>>>> <%= capFeaturePart %> - Reducer Test", () => {
       accessToken: "token",
       loginSuccess: true
     };
-    state = <% if (auth) { %>authReducer<% } else { %><%= featurePart %>reducer<% } %>(state, {
+    state = <% if (auth) { %>authReducer<% } else { %><%= feature %>Reducer<% } %>(state, {
       type: types.LOGIN_SUCCESS,
       payload: { profile: "tester", accessToken: "token" }
     });
@@ -41,7 +55,7 @@ describe(">>>>>> <%= capFeaturePart %> - Reducer Test", () => {
       ...initialState,
       loginError: true
     };
-    state = <% if (auth) { %>authReducer<% } else { %><%= featurePart %>reducer<% } %>(state, { type: types.LOGIN_ERROR });
+    state = <% if (auth) { %>authReducer<% } else { %><%= feature %>Reducer<% } %>(state, { type: types.LOGIN_ERROR });
     expect(state).toEqual(expectedState);
   });
   it("+++ reducer for LOGOUT", () => {
@@ -52,17 +66,24 @@ describe(">>>>>> <%= capFeaturePart %> - Reducer Test", () => {
       loginSuccess: true
     };
     let expectedState = initialState;
-    state = <% if (auth) { %>authReducer<% } else { %><%= featurePart %>reducer<% } %>(state, { type: types.LOGOUT });
+    state = <% if (auth) { %>authReducer<% } else { %><%= feature %>Reducer<% } %>(state, { type: types.LOGOUT });
     expect(state).toEqual(expectedState);
   });
+  // --End auth
   <% } %>
-  it("+++ reducer for DEFAULT_ACTION", () => {
-    let state = {
+
+  <% if (axios) { %>
+  // Reducer Tests for axios module
+  // --Start axios
+  it("+++ reducer for GET_OBJECT", () => {
+    let state = initialState;
+    let expectedState = {
       ...initialState,
-      value: "value"
+      payload: "axios content"
     };
-    let expectedState = initialState;
-    state = <% if (auth) { %>authReducer<% } else { %><%= featurePart %>reducer<% } %>(state, { type: types.DEFAULT_ACTION, value: "value" });
+    state = <% if (auth) { %>authReducer<% } else { %><%= feature %>Reducer<% } %>(state, { type: types.GET_OBJECT, payload: "axios content" });
     expect(state).toEqual(expectedState);
   });
+  // --End axios
+  <% } %>
 });
