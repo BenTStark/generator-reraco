@@ -4,8 +4,10 @@ import types from "./types";
 // Any value treatment should happen before in operations.js!
 // This is an example how an action should look like:
 const defaultAction = (value) => {
+  return {
     type: types.DEFAULT_ACTION,
     value: value
+  }
 };
 
 <% if (auth) { %>
