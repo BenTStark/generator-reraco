@@ -1,7 +1,7 @@
 import ActionCreators from "./actions";
 import types from "./types";
 
-describe(">>> <%= capFeaturePart %> - Action Test", () => {
+describe(">>> <%= capFeature %> - Action Test", () => {
   // This is an example how a simple action test should look like:
   it("+++ defaultAction", () => {
     const value = "value"

@@ -87,7 +87,7 @@ const getAxiosObj = obj => ActionCreators.getAxiosObj(obj);
 // --End axios operations
 <% } %>
 
-export const <%= capFeaturePart %>Operations = {
+export const <%= capFeature %>Operations = {
   defaultOperation<% if (auth) { %>,
   handleLogin,
   loginRequest,

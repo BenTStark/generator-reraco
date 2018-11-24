@@ -1,7 +1,7 @@
 <% if (auth) { %>
 // Operation Tests for Auth module
 // --Start auth
-import { <%= capFeaturePart %>Operations } from "./operations";
+import { <%= capFeature %>Operations } from "./operations";
 import AuthService from "./auth.service";
 import types from "./types";
 
@@ -13,16 +13,16 @@ AuthService.getAccessToken.mockReturnValue("token");
 AuthService.setToken.mockReturnValue();
 AuthService.setProfile.mockReturnValue();
 
-describe(">>> <%= capFeaturePart %> - Operations Test", () => {
+describe(">>> <%= capFeature %> - Operations Test", () => {
   it("+++ checkLogin - When not logged in", () => {
-    return <%= capFeaturePart %>Operations.checkLogin().then(response => {
+    return <%= capFeature %>Operations.checkLogin().then(response => {
       expect(response).toBeDefined();
       expect(response.result).toEqual("");
     });
   });
 
   it("+++ checkLogin When logged in", () => {
-    return <%= capFeaturePart %>Operations.checkLogin().then(response => {
+    return <%= capFeature %>Operations.checkLogin().then(response => {
       expect(response).toBeDefined();
       expect(response.result).toEqual(types.LOGIN_SUCCESS);
     });

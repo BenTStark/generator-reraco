@@ -1,7 +1,7 @@
 import <% if (auth) { %>authReducer<% } else { %><%= feature %>Reducer<% } %> from "./reducer";
 import types from "./types";
 
-describe(">>>>>> <%= capFeaturePart %> - Reducer Test", () => {
+describe(">>>>>> <%= capFeature %> - Reducer Test", () => {
   let initialState = {
     value: null<% if (auth) { %>,
     profile: null,

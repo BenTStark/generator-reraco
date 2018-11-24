@@ -281,6 +281,7 @@ module.exports = class extends Generator {
   writing() {
     var props = this.answers;
     props.capFeaturePart = changeCase.pascalCase(props.featurePart);
+    props.capFeature = changeCase.pascalCase(props.feature);
     console.log(props);
     var copy = this.fs.copy.bind(this.fs);
     var copyTpl = this.fs.copyTpl.bind(this.fs);
