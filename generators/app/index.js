@@ -3,13 +3,9 @@ var chalk = require("chalk");
 var yosay = require("yosay");
 
 module.exports = class extends Generator {
-  // The name `constructor` is important here
   constructor(args, opts) {
-    // Calling the super constructor is important so our generator is correctly set up
     super(args, opts);
-
-    // Next, add your custom code
-    this.option("babel"); // This method adds support for a `--babel` flag
+    this.answers = {};
   }
 
   prompting() {
@@ -21,22 +17,43 @@ module.exports = class extends Generator {
           ". This will be a full generator to create react-redux-boilerplate. You can choose to have Auth0, Axios, PWA, etc. For now, you can only use the sugenerator ´piece´ which allows you to create containers or components."
       )
     );
-    const questionOne = [
-      { type: "confirm", name: "sub", message: "Call Sub generator?" }
-    ];
-    this.answers = {};
-    const loop = (questions, index) => {
-      var key = [questions[index][0].name];
-      if (this.answers[key] === undefined) {
-        return this.prompt(questions[index]).then(props => {
-          this.answers[key] = props[key];
-          done();
-        });
-      }
-      questions.length === index ? this.prompt([]) : loop(questions, index + 1);
+    const questionOne = {
+      type: "confirm",
+      name: "sub",
+      message: "Call Sub generator?"
     };
 
-    return loop([questionOne], 0);
+    const loop = (questions, index = 0) => {
+      const finish = function(array, index, cb) {
+        return array.length - 1 === index ? done() : cb(array, index + 1);
+      };
+      const isUndefined = function(obj) {
+        return obj === undefined ? true : false;
+      };
+      const handleFollowUp = function(question, answers, condition) {
+        if (!isUndefined(question.nextAnswers)) {
+          question.nextAnswers.map(answer => {
+            if (condition === answer.condition) {
+              return (answers[answer.name] = answer.value);
+            }
+          });
+        }
+      };
+      var key = [questions[index].name];
+      var question = questions[index];
+
+      if (isUndefined(this.answers[key])) {
+        return this.prompt([question]).then(props => {
+          this.answers[key] = props[key];
+          handleFollowUp(question, this.answers, props[key]);
+          finish(questions, index, loop);
+        });
+      }
+      handleFollowUp(question, this.answers, this.answers[key]);
+      finish(questions, index, loop);
+    };
+
+    return loop([questionOne]);
   }
 
   writing() {
@@ -44,7 +61,7 @@ module.exports = class extends Generator {
       this.composeWith(
         "reraco:component",
         {
-          answers: { one: true },
+          answers: { preference: "template", template: "contact" },
           fromCompose: true
         },
         { local: require.resolve("./../component") }
