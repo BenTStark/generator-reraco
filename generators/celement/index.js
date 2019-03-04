@@ -16,11 +16,12 @@ module.exports = class extends Generator {
 
   prompting() {
     var done = this.async();
-    var introduction = "Design your Celement or use a fully working template.";
+    var title = chalk.red("Celement Generator: ");
+    var introduction = "Design your ducks or use a fully working template.";
 
     this.options.fromCompose
-      ? this.log(introduction)
-      : this.log(yosay(chalk.red("Celement Generator: ") + introduction));
+      ? this.log(title)
+      : this.log(yosay(title + introduction));
 
     const questionPreference = {
       type: "list",
@@ -63,6 +64,15 @@ module.exports = class extends Generator {
       ]
     };
 
+    const questionAuth = {
+      type: "checkbox",
+      name: "auth",
+      message: "Do want to add authentication (auth0js)?",
+      // State and component: you want to use the login information
+      // dispatch: you want to controll the login process
+      choices: ["container - state", "container - dispatch", "component"]
+    };
+
     const questionDucks = {
       type: "confirm",
       name: "ducks",
@@ -72,7 +82,13 @@ module.exports = class extends Generator {
     const questionService = {
       type: "confirm",
       name: "service",
-      message: "Do want to a service file?"
+      message: "Do want to add a service file?"
+    };
+
+    const questionAxios = {
+      type: "confirm",
+      name: "axios",
+      message: "Do you want to add AJAX with axios?"
     };
 
     const questionCss = {
@@ -84,7 +100,7 @@ module.exports = class extends Generator {
     const questionTest = {
       type: "confirm",
       name: "test",
-      message: "Do you want to add a Jest test file??"
+      message: "Do you want to add Jest test files?"
     };
 
     const loop = (questions, index = 0) => {
@@ -122,8 +138,10 @@ module.exports = class extends Generator {
       questionTemplate,
       questionName,
       questionRedux,
+      questionAuth,
       questionDucks,
       questionService,
+      questionAxios,
       questionCss,
       questionTest
     ]);
@@ -135,8 +153,27 @@ module.exports = class extends Generator {
         "reraco:container",
         {
           answers: {
-            // ?????????
-            name: this.answers.name
+            auth: {
+              dispatch:
+                _.indexOf(this.answers.auth, "container - dispatch") > -1
+                  ? true
+                  : false,
+              state:
+                _.indexOf(this.answers.auth, "container - state") > -1
+                  ? true
+                  : false
+            },
+            axios: this.answers.axios,
+            dispatch:
+              _.indexOf(this.answers.auth, "container -dispatch") > -1
+                ? true
+                : undefined,
+            name: this.answers.name,
+            preference: this.answers.preference,
+            state:
+              _.indexOf(this.answers.auth, "container -state") > -1
+                ? true
+                : undefined
           },
           fromCompose: true
         },
@@ -146,10 +183,13 @@ module.exports = class extends Generator {
         "reraco:component",
         {
           answers: {
+            auth: _.indexOf(this.answers.auth, "component") > -1 ? true : false,
+            axios: false,
+            hasContainer: true,
+            hasService: false,
+            name: this.answers.name,
             preference: this.answers.preference,
-            type: "presentational",
-            //template: this.answers.template,
-            name: this.answers.name
+            type: "presentational"
           },
           fromCompose: true
         },
@@ -160,6 +200,11 @@ module.exports = class extends Generator {
           "reraco:ducks",
           {
             answers: {
+              auth:
+                _.indexOf(this.answers.auth, "container - dispatch") > -1
+                  ? true
+                  : false,
+              axios: this.answers.axios,
               name: this.answers.name
             },
             fromCompose: true
@@ -172,8 +217,13 @@ module.exports = class extends Generator {
         "reraco:component",
         {
           answers: {
+            // if axios, then it will be handled in service!
+            axios: this.answers.axios,
+            hasContainer: false,
+            hasService: this.answers.service,
+            name: this.answers.name,
             preference: this.answers.preference,
-            name: this.answers.name
+            type: this.answers.service ? "presentational" : undefined
           },
           fromCompose: true
         },
@@ -184,6 +234,7 @@ module.exports = class extends Generator {
           "reraco:service",
           {
             answers: {
+              axios: this.answers.axios,
               name: this.answers.name
             },
             fromCompose: true

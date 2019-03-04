@@ -1,6 +1,7 @@
 var Generator = require("yeoman-generator");
 var chalk = require("chalk");
 var yosay = require("yosay");
+var changeCase = require("change-case");
 
 module.exports = class extends Generator {
   constructor(args, opts) {
@@ -8,19 +9,18 @@ module.exports = class extends Generator {
     var that = this;
     //this.option('babel');
     that.options.answers === undefined
-      ? (this.answers = {})
+      ? (this.answers = { auth: false, hasContainer: false, hasService: false })
       : (this.answers = that.options.answers);
   }
 
   prompting() {
     var done = this.async();
-    var introduction =
-      "Design your React component or choose a fully working template.";
+    var title = chalk.red("Component Generator: ");
+    var introduction = "Design your ducks or use a fully working template.";
 
     this.options.fromCompose
-      ? this.log(introduction)
-      : this.log(yosay(chalk.red("Component Generator: ") + introduction));
-
+      ? this.log(title)
+      : this.log(yosay(title + introduction));
     const questionPreference = {
       type: "list",
       name: "preference",
@@ -58,13 +58,13 @@ module.exports = class extends Generator {
       name: "type",
       message: "Do want a functional or presentational component?",
       choices: ["functional", "presentational"],
-      nextAnswers: [{ condition: "functional", name: "auth", value: "n/a" }]
+      nextAnswers: [{ condition: "functional", name: "axios", value: false }]
     };
 
-    const questionAuth = {
+    const questionAxios = {
       type: "confirm",
-      name: "auth",
-      message: "Do want to add authentication (auth0js)?"
+      name: "axios",
+      message: "Do you want to add AJAX with axios?"
     };
 
     const questionProptypes = {
@@ -106,13 +106,21 @@ module.exports = class extends Generator {
     return loop([
       questionPreference,
       questionTemplate,
+      questionName,
       questionType,
-      questionAuth,
+      questionAxios,
       questionProptypes
     ]);
   }
 
   writing() {
-    this.log(this.answers);
+    var props = this.answers;
+    props.capName = changeCase.pascalCase(props.name);
+    //var copy = this.fs.copy.bind(this.fs);
+    var copyTpl = this.fs.copyTpl.bind(this.fs);
+    var tPath = this.templatePath.bind(this);
+    var dPath = this.destinationPath.bind(this);
+
+    copyTpl(tPath("custom.js"), dPath(props.name + ".component.js"), props);
   }
 };

@@ -1,7 +1,6 @@
 var Generator = require("yeoman-generator");
 var chalk = require("chalk");
 var yosay = require("yosay");
-var changeCase = require("change-case");
 
 module.exports = class extends Generator {
   constructor(args, opts) {
@@ -14,8 +13,8 @@ module.exports = class extends Generator {
 
   prompting() {
     var done = this.async();
-    var title = chalk.red("Operatopm Generator: ");
-    var introduction = "Design your operation.";
+    var title = chalk.red("Types Generator: ");
+    var introduction = "Design your action.";
 
     this.options.fromCompose
       ? this.log(title + " adding answers from previous generators")
@@ -75,14 +74,13 @@ module.exports = class extends Generator {
 
   writing() {
     var props = this.answers;
-    props.capName = changeCase.pascalCase(props.name);
     var copyTpl = this.fs.copyTpl.bind(this.fs);
     var tPath = this.templatePath.bind(this);
     var dPath = this.destinationPath.bind(this);
 
     copyTpl(
       tPath("custom.js"),
-      dPath("duck/" + props.name + ".operation.js"),
+      dPath("duck/" + props.name + ".types.js"),
       props
     );
   }
