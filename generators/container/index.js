@@ -62,9 +62,7 @@ module.exports = class extends Generator {
       type: "confirm",
       name: "state",
       message: "Do you want a map state to props function?",
-      nextAnswers: [
-        { condition: false, name: "dispatch", value: true }
-      ]
+      nextAnswers: [{ condition: false, name: "dispatch", value: true }]
     };
 
     const questionDispatch = {
@@ -114,16 +112,28 @@ module.exports = class extends Generator {
   }
 
   writing() {
+    const isUndefined = function(obj) {
+      return obj === undefined ? true : false;
+    };
+
     var props = this.answers;
     props.capName = changeCase.pascalCase(props.name);
     //var copy = this.fs.copy.bind(this.fs);
     var copyTpl = this.fs.copyTpl.bind(this.fs);
     var tPath = this.templatePath.bind(this);
     var dPath = this.destinationPath.bind(this);
+    var clientPath = "";
+    if (!isUndefined(this.options.clientPath)) {
+      clientPath = this.options.clientPath;
+    }
+    var folder = "";
+    if (!isUndefined(this.answers.folder)) {
+      folder = this.answers.folder;
+    }
 
     copyTpl(
       tPath("custom.js"),
-      dPath(props.name + ".container.js"),
+      dPath(clientPath + folder + props.name + ".container.js"),
       props
     );
   }

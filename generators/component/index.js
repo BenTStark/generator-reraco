@@ -29,8 +29,8 @@ module.exports = class extends Generator {
       nextAnswers: [
         { condition: "custom", name: "template", value: "n/a" },
         { condition: "template", name: "type", value: "n/a" },
-        { condition: "template", name: "auth", value: "n/a" },
-        { condition: "template", name: "proptypes", value: "n/a" }
+        { condition: "template", name: "auth", value: false },
+        { condition: "template", name: "proptypes", value: false }
       ]
     };
 
@@ -38,8 +38,14 @@ module.exports = class extends Generator {
       type: "list",
       name: "template",
       message: "Choose your template?",
-      choices: ["contact", "to-do list"],
+      choices: ["home", "cards", "bullets", "contact", "to-do list"],
       nextAnswers: [
+        { condition: "home", name: "type", value: "presentational" },
+        { condition: "home", name: "name", value: "home" },
+        { condition: "cards", name: "type", value: "presentational" },
+        { condition: "cards", name: "name", value: "cards" },
+        { condition: "bullets", name: "type", value: "presentational" },
+        { condition: "bullets", name: "name", value: "bullets" },
         { condition: "contact", name: "type", value: "presentational" },
         { condition: "contact", name: "name", value: "contact" },
         { condition: "to-do list", name: "type", value: "functional" },
@@ -114,13 +120,29 @@ module.exports = class extends Generator {
   }
 
   writing() {
+    const isUndefined = function(obj) {
+      return obj === undefined ? true : false;
+    };
+
     var props = this.answers;
     props.capName = changeCase.pascalCase(props.name);
     //var copy = this.fs.copy.bind(this.fs);
     var copyTpl = this.fs.copyTpl.bind(this.fs);
     var tPath = this.templatePath.bind(this);
     var dPath = this.destinationPath.bind(this);
+    var clientPath = "";
+    if (!isUndefined(this.options.clientPath)) {
+      clientPath = this.options.clientPath;
+    }
+    var folder = "";
+    if (!isUndefined(this.answers.folder)) {
+      folder = this.answers.folder;
+    }
 
-    copyTpl(tPath("custom.js"), dPath(props.name + ".component.js"), props);
+    copyTpl(
+      tPath("custom.js"),
+      dPath(clientPath + folder + props.name + ".component.js"),
+      props
+    );
   }
 };

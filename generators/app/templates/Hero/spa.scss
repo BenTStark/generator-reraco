@@ -1,0 +1,12 @@
+.heroContent {
+  background: url("../Hero/bg.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover; /* For WebKit*/
+  -moz-background-size: cover; /* Mozilla*/
+  -o-background-size: cover; /* Opera*/
+  background-size: cover; /* Generic*/
+  height: 100%;
+  width: 100%;
+}
+.heroContent p {
+  vertical-align: middle;
+}

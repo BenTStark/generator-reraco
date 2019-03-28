@@ -66,11 +66,27 @@ module.exports = class extends Generator {
   }
 
   writing() {
+    const isUndefined = function(obj) {
+      return obj === undefined ? true : false;
+    };
+
     var props = this.answers;
     var copyTpl = this.fs.copyTpl.bind(this.fs);
     var tPath = this.templatePath.bind(this);
     var dPath = this.destinationPath.bind(this);
+    var clientPath = "";
+    if (!isUndefined(this.options.clientPath)) {
+      clientPath = this.options.clientPath;
+    }
+    var folder = "";
+    if (!isUndefined(this.answers.folder)) {
+      folder = this.answers.folder;
+    }
 
-    copyTpl(tPath("custom.js"), dPath(props.name + ".service.js"), props);
+    copyTpl(
+      tPath("custom.js"),
+      dPath(clientPath + folder + props.name + ".service.js"),
+      props
+    );
   }
 };

@@ -1,0 +1,90 @@
+//@import "~bootstrap/scss/bootstrap";
+html {
+  font-size: 16px;
+}
+
+@media (min-width: 320px) {
+  html {
+    font-size: calc(16px + 4 * (100vw - 320px) / 1046);
+  }
+}
+
+@media (min-width: 1366px) {
+  html {
+    font-size: 20px;
+  }
+}
+
+.alignLeft {
+  float: left;
+}
+.alignRight {
+  float: right;
+}
+
+.appDark {
+  background: #<%= darkShades %>;
+  display: -ms-flex;
+  display: -webkit-flex;
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+.appLight {
+  background: #<%= lightShades %>;
+  display: -ms-flex;
+  display: -webkit-flex;
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.inApp {
+  padding: 50px 100px 50px 100px;
+  position: relative;
+  width: 100%;
+}
+
+.moveDownButton {
+  height: 32px;
+  width: 32px;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  margin-bottom: -16px;
+  background: #<%= mainBrandColor %>;
+  opacity: 0.7;
+  visibility: hidden;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  transition: all 0.2s ease-in-out;
+}
+.moveDownButton:hover {
+  transform: scale(1.2);
+  opacity: 1;
+}
+
+.moveDownButtonAngle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  opacity: 1;
+  color: #<%= lightShades %>;
+}
+@media (min-width: 992px) {
+  .appDark {
+    height: 95vh;
+  }
+  .appLight {
+    height: 95vh;
+  }
+  .inApp {
+    padding: 50px 200px 50px 200px;
+  }
+  .moveDownButton {
+    visibility: visible;
+  }
+}

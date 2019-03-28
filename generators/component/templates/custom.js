@@ -15,7 +15,7 @@ export default class <%= capName %>Component extends Component {
   // Using propTypes is recommended for good code style, readability and code stability
   static propTypes = {};
   <% } %>
-  componentDidMount() {};
+  //componentDidMount() {};
 
   <% if (axios && !hasContainer && !hasService) { %>
   const handleAxios() {

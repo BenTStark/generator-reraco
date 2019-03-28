@@ -100,8 +100,10 @@ module.exports = class extends Generator {
           answers: {
             auth: this.answers.auth,
             axios: this.answers.axios,
+            folder: this.answers.folder,
             name: this.answers.name
           },
+          clientPath: this.options.clientPath,
           fromCompose: true
         },
         { local: require.resolve("./../action") }
@@ -114,8 +116,10 @@ module.exports = class extends Generator {
           answers: {
             auth: this.answers.auth,
             axios: this.answers.axios,
+            folder: this.answers.folder,
             name: this.answers.name
           },
+          clientPath: this.options.clientPath,
           fromCompose: true
         },
         { local: require.resolve("./../operation") }
@@ -128,8 +132,10 @@ module.exports = class extends Generator {
           answers: {
             auth: this.answers.auth,
             axios: this.answers.axios,
+            folder: this.answers.folder,
             name: this.answers.name
           },
+          clientPath: this.options.clientPath,
           fromCompose: true
         },
         { local: require.resolve("./../reducer") }
@@ -142,8 +148,10 @@ module.exports = class extends Generator {
           answers: {
             auth: this.answers.auth,
             axios: this.answers.axios,
+            folder: this.answers.folder,
             name: this.answers.name
           },
+          clientPath: this.options.clientPath,
           fromCompose: true
         },
         { local: require.resolve("./../types") }

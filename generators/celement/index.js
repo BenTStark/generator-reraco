@@ -20,8 +20,14 @@ module.exports = class extends Generator {
     var introduction = "Design your ducks or use a fully working template.";
 
     this.options.fromCompose
-      ? this.log(title)
+      ? this.log(chalk.green(this.answers.name) + ": " + title)
       : this.log(yosay(title + introduction));
+
+    const questionFolder = {
+      type: "confirm",
+      name: "folder",
+      message: "Do want to create a folder (name equal to celement's name)?"
+    };
 
     const questionPreference = {
       type: "list",
@@ -30,10 +36,10 @@ module.exports = class extends Generator {
       choices: ["custom", "template"],
       nextAnswers: [
         { condition: "custom", name: "template", value: "n/a" },
-        { condition: "template", name: "redux", value: "n/a" },
-        { condition: "template", name: "service", value: "n/a" },
-        { condition: "template", name: "css", value: "n/a" },
-        { condition: "template", name: "test", value: "n/a" }
+        { condition: "template", name: "redux", value: false },
+        { condition: "template", name: "service", value: false },
+        { condition: "template", name: "css", value: false },
+        { condition: "template", name: "test", value: false }
       ]
     };
 
@@ -41,8 +47,11 @@ module.exports = class extends Generator {
       type: "list",
       name: "template",
       message: "Choose your template?",
-      choices: ["contact", "navigation"],
+      choices: ["home", "cards", "bullets", "contact", "navigation"],
       nextAnswers: [
+        { condition: "home", name: "name", value: "home" },
+        { condition: "cards", name: "name", value: "cards" },
+        { condition: "bullets", name: "name", value: "bullets" },
         { condition: "contact", name: "name", value: "contact" },
         { condition: "navigation", name: "name", value: "navigation" }
       ]
@@ -134,6 +143,7 @@ module.exports = class extends Generator {
     };
 
     return loop([
+      questionFolder,
       questionPreference,
       questionTemplate,
       questionName,
@@ -168,6 +178,9 @@ module.exports = class extends Generator {
               _.indexOf(this.answers.auth, "container -dispatch") > -1
                 ? true
                 : undefined,
+            folder: this.answers.folder
+              ? changeCase.upperCaseFirst(this.answers.name) + "/"
+              : undefined,
             name: this.answers.name,
             preference: this.answers.preference,
             state:
@@ -175,7 +188,8 @@ module.exports = class extends Generator {
                 ? true
                 : undefined
           },
-          fromCompose: true
+          fromCompose: true,
+          clientPath: this.options.clientPath
         },
         { local: require.resolve("./../container") }
       );
@@ -185,13 +199,20 @@ module.exports = class extends Generator {
           answers: {
             auth: _.indexOf(this.answers.auth, "component") > -1 ? true : false,
             axios: false,
+            folder: this.answers.folder
+              ? changeCase.upperCaseFirst(this.answers.name) + "/"
+              : undefined,
             hasContainer: true,
             hasService: false,
             name: this.answers.name,
             preference: this.answers.preference,
+            template: _.isEqual(this.answers.preference, "template")
+              ? this.answers.template
+              : "n/a",
             type: "presentational"
           },
-          fromCompose: true
+          fromCompose: true,
+          clientPath: this.options.clientPath
         },
         { local: require.resolve("./../component") }
       );
@@ -205,9 +226,13 @@ module.exports = class extends Generator {
                   ? true
                   : false,
               axios: this.answers.axios,
+              folder: this.answers.folder
+                ? changeCase.upperCaseFirst(this.answers.name) + "/"
+                : undefined,
               name: this.answers.name
             },
-            fromCompose: true
+            fromCompose: true,
+            clientPath: this.options.clientPath
           },
           { local: require.resolve("./../ducks") }
         );
@@ -219,13 +244,20 @@ module.exports = class extends Generator {
           answers: {
             // if axios, then it will be handled in service!
             axios: this.answers.axios,
+            folder: this.answers.folder
+              ? changeCase.upperCaseFirst(this.answers.name) + "/"
+              : undefined,
             hasContainer: false,
             hasService: this.answers.service,
             name: this.answers.name,
             preference: this.answers.preference,
+            template: _.isEqual(this.answers.preference, "template")
+              ? this.answers.template
+              : "n/a",
             type: this.answers.service ? "presentational" : undefined
           },
-          fromCompose: true
+          fromCompose: true,
+          clientPath: this.options.clientPath
         },
         { local: require.resolve("./../component") }
       );
@@ -235,9 +267,13 @@ module.exports = class extends Generator {
           {
             answers: {
               axios: this.answers.axios,
+              folder: this.answers.folder
+                ? changeCase.upperCaseFirst(this.answers.name) + "/"
+                : undefined,
               name: this.answers.name
             },
-            fromCompose: true
+            fromCompose: true,
+            clientPath: this.options.clientPath
           },
           { local: require.resolve("./../service") }
         );
